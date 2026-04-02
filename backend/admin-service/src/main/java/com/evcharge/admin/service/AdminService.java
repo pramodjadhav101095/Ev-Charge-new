@@ -27,6 +27,7 @@ public class AdminService {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public List<UserResponse> listUsers() {
+
         return userClient.getAllUsers();
     }
 
