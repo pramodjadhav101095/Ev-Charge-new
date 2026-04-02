@@ -1,0 +1,30 @@
+CREATE DATABASE IF NOT EXISTS auth_db;
+CREATE DATABASE IF NOT EXISTS user_db;
+CREATE DATABASE IF NOT EXISTS station_db;
+CREATE DATABASE IF NOT EXISTS booking_db;
+CREATE DATABASE IF NOT EXISTS payment_db;
+CREATE DATABASE IF NOT EXISTS notification_db;
+CREATE DATABASE IF NOT EXISTS analytics_db;
+CREATE DATABASE IF NOT EXISTS session_db;
+CREATE DATABASE IF NOT EXISTS admin_db;
+
+GRANT ALL PRIVILEGES ON auth_db.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON user_db.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON station_db.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON booking_db.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON payment_db.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON notification_db.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON analytics_db.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON session_db.* TO 'root'@'%';
+GRANT ALL PRIVILEGES ON admin_db.* TO 'root'@'%';
+
+FLUSH PRIVILEGES;
+
+USE auth_db;
+CREATE TABLE IF NOT EXISTS user_credential (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
+    password VARCHAR(255),
+    roles VARCHAR(255)
+);

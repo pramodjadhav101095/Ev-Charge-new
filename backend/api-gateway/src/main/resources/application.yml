@@ -1,0 +1,188 @@
+server:
+  port: 9000
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: auth-service
+                fallbackUri: forward:/fallback/auth
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: user-service
+                fallbackUri: forward:/fallback/user
+
+        - id: station-discovery-service
+          uri: lb://STATION-DISCOVERY-SERVICE
+          predicates:
+            - Path=/stations/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: station-discovery-service
+                fallbackUri: forward:/fallback/station
+
+        - id: slot-booking-service
+          uri: lb://SLOT-BOOKING-SERVICE
+          predicates:
+            - Path=/bookings/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: slot-booking-service
+                fallbackUri: forward:/fallback/booking
+
+        - id: payment-service
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/payments/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: payment-service
+                fallbackUri: forward:/fallback/payment
+        
+        - id: charging-session-service
+          uri: lb://CHARGING-SESSION-SERVICE
+          predicates:
+            - Path=/sessions/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: charging-session-service
+                fallbackUri: forward:/fallback/session
+
+        - id: admin-service
+          uri: lb://ADMIN-SERVICE
+          predicates:
+            - Path=/admin/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: admin-service
+                fallbackUri: forward:/fallback/admin
+
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notifications/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: notification-service
+                fallbackUri: forward:/fallback/notification
+
+        - id: analytics-service
+          uri: lb://ANALYTICS-SERVICE
+          predicates:
+            - Path=/analytics/**
+          filters:
+            - AuthenticationFilter
+            - name: CircuitBreaker
+              args:
+                name: analytics-service
+                fallbackUri: forward:/fallback/analytics
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 
+              - "http://localhost:3000"
+              - "http://localhost:3001"
+              - "http://localhost"
+              - "http://localhost:80"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOST:discovery-service}:8761/eureka/
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      auth-service:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        registerHealthIndicator: true
+      user-service:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        registerHealthIndicator: true
+      station-discovery-service:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        registerHealthIndicator: true
+      slot-booking-service:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        registerHealthIndicator: true
+      payment-service:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        registerHealthIndicator: true
+      charging-session-service:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        registerHealthIndicator: true
+      admin-service:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        registerHealthIndicator: true
+      notification-service:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        registerHealthIndicator: true
+      analytics-service:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        registerHealthIndicator: true

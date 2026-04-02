@@ -1,0 +1,41 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: payment-service
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:mysql}:3306/payment_db?createDatabaseIfNotExist=true
+    username: root
+    password: ${MYSQL_PASSWORD:1qaz2wsx!@QW}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST:kafka}:${KAFKA_PORT:29092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOST:discovery-service}:8761/eureka/
+
+# Razorpay Configuration (Use environment variables for security)
+razorpay:
+  key: ${RAZORPAY_KEY:rzp_test_placeholder}
+  secret: ${RAZORPAY_SECRET:placeholder_secret}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

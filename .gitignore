@@ -1,0 +1,31 @@
+# Maven
+target/
+*.log
+
+# Environment files
+.env
+
+# IDE files
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# OS files
+.DS_Store
+
+# Crash logs
+hs_err_pid*
+
+# Node modules
+node_modules/
+
+# Maven
+target/
+
+# Logs
+*.log
+
+# Env
+.env

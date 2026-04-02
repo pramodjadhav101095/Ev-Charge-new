@@ -1,0 +1,202 @@
+version: '3.8'
+
+services:
+  # Infrastructure
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - "6380:6379"
+
+  # Backend Services
+  discovery-service:
+    build: ./backend/discovery-service
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  api-gateway:
+    build: ./backend/api-gateway
+    ports:
+      - "9000:9000"
+    depends_on:
+      - discovery-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+
+  auth-service:
+    build: ./backend/auth-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/auth_db
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+
+  user-service:
+    build: ./backend/user-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mysql
+      - redis
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/user_db
+      - SPRING_REDIS_HOST=redis
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+
+  station-discovery-service:
+    build: ./backend/station-discovery-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+      - discovery-service
+    environment:
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/station_db
+      - SPRING_REDIS_HOST=redis
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+
+  slot-booking-service:
+    build: ./backend/slot-booking-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - mysql
+      - redis
+      - kafka
+      - discovery-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/booking_db
+      - SPRING_REDIS_HOST=redis
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+
+  payment-service:
+    build: ./backend/payment-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - mysql
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/payment_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+
+  charging-session-service:
+    build: ./backend/charging-session-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      - mysql
+      - redis
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/session_db
+      - SPRING_REDIS_HOST=redis
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+
+  admin-service:
+    build: ./backend/admin-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - mysql
+      - redis
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/admin_db
+      - SPRING_REDIS_HOST=redis
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+
+  notification-service:
+    build: ./backend/notification-service
+    ports:
+      - "8088:8088"
+    depends_on:
+      - mysql
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/notification_db
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+
+  analytics-service:
+    build: ./backend/analytics-service
+    ports:
+      - "8089:8089"
+    depends_on:
+      - mysql
+      - redis
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/analytics_db
+      - SPRING_REDIS_HOST=redis
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend/ev-charge-web
+      args:
+        - VITE_GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+        - VITE_API_URL=http://localhost:9000
+        - VITE_MOCK_PAYMENT=true
+    ports:
+      - "3001:80"
+    depends_on:
+      - api-gateway
+
+volumes:
+  mysql_data:
