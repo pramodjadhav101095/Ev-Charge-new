@@ -51,7 +51,7 @@ ocpp:
 
 google:
   maps:
-    api-key: ${GOOGLE_MAPS_API_KEY:AIzaSyBXt15eZKc_elG7OWqgimsnkIIb2z3nB1g}
+    api-key: ${GOOGLE_MAPS_API_KEY}
 
 logging:
   level:
