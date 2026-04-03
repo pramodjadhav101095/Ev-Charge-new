@@ -35,7 +35,7 @@ public class NotificationService {
             UserDTO user = userClient.getUserById(request.getUserId());
             switch (request.getType()) {
                 case EMAIL -> recipient = user.getEmail();
-                case SMS -> recipient = user.getPhoneNumber();
+                case SMS, WHATSAPP -> recipient = user.getPhoneNumber();
                 case PUSH -> recipient = user.getDeviceToken();
             }
         }
