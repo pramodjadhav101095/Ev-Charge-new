@@ -1,5 +1,5 @@
 package com.evcharge.notification.entity;
 
 public enum NotificationType {
-    EMAIL, SMS, PUSH
+    EMAIL, SMS, PUSH, WHATSAPP
 }

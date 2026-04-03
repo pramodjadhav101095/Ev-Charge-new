@@ -29,6 +29,16 @@ public class NotificationConsumer {
                 .build();
 
         notificationService.sendNotification(emailRequest);
+
+        // Send WhatsApp
+        NotificationRequest whatsappRequest = NotificationRequest.builder()
+                .userId(event.getUserId())
+                .type(NotificationType.WHATSAPP)
+                .subject("Booking Confirmed")
+                .content("Your EV Charging slot at " + event.getStationName() + " is confirmed for " + event.getSlotStartTime() + ". Thank you!")
+                .build();
+
+        notificationService.sendNotification(whatsappRequest);
     }
 
     @KafkaListener(topics = "booking.cancelled", groupId = "${spring.kafka.consumer.group-id}")
