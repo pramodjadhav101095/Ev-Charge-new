@@ -1,26 +1,27 @@
-version: '3'
+version: '3.8'
+
 services:
-  zookeeper:
+  zookeeper-new:
     image: confluentinc/cp-zookeeper:7.3.0
-    container_name: zookeeper
+    container_name: zookeeper-new
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
-      - "2181:2181"
+      - "2190:2181"
 
   kafka:
     image: confluentinc/cp-kafka:7.3.0
     container_name: kafka
     ports:
-      - "9092:9092"
+      - "10090:9092"
     depends_on:
-      - zookeeper
+      - zookeeper-new
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper-new:2181'
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:10090,PLAINTEXT_INTERNAL://kafka:29092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
@@ -32,7 +33,7 @@ services:
       MYSQL_ROOT_PASSWORD: 1qaz2wsx!@QW
       MYSQL_DATABASE: auth_db
     ports:
-      - "3307:3306"
+      - "3315:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -41,47 +42,187 @@ services:
     image: redis:6.2-alpine
     container_name: redis
     ports:
-      - "6380:6379"
+      - "6379:6379"
+
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "9000:9000"
+    depends_on:
+      - discovery-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - EUREKA_HOST=discovery-service
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - EUREKA_HOST=discovery-service
+      - KAFKA_HOST=kafka
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mysql
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - EUREKA_HOST=discovery-service
+      - KAFKA_HOST=kafka
 
   station-discovery-service:
     build: ./station-discovery-service
     container_name: station-discovery-service
     ports:
       - "8083:8083"
+    env_file:
+      - .env
     depends_on:
       - mysql
       - redis
+      - discovery-service
       - kafka
     environment:
-      - SPRING_PROFILES_ACTIVE=dev  # This tells Spring Boot to use the 'dev' @Profile!
+      - SPRING_PROFILES_ACTIVE=dev
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - EUREKA_HOST=discovery-service
+      - KAFKA_HOST=kafka
+      - REDIS_HOST=redis
       - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/station_db
-      - SPRING_REDIS_HOST=redis
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+
+  slot-booking-service:
+    build: ./slot-booking-service
+    container_name: slot-booking-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - mysql
+      - redis
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - EUREKA_HOST=discovery-service
+      - KAFKA_HOST=kafka
+      - REDIS_HOST=redis
+
+  payment-service:
+    build: ./payment-service
+    container_name: payment-service
+    ports:
+      - "8085:8085"
+    depends_on:
+      - mysql
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - EUREKA_HOST=discovery-service
+      - KAFKA_HOST=kafka
+
+  charging-session-service:
+    build: ./charging-session-service
+    container_name: charging-session-service
+    ports:
+      - "8086:8086"
+    depends_on:
+      - mysql
+      - discovery-service
+      - kafka
+      - redis
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - EUREKA_HOST=discovery-service
+      - KAFKA_HOST=kafka
+      - REDIS_HOST=redis
+
+  admin-service:
+    build: ./admin-service
+    container_name: admin-service
+    ports:
+      - "8087:8087"
+    depends_on:
+      - mysql
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - EUREKA_HOST=discovery-service
+      - KAFKA_HOST=kafka
 
   notification-service:
     build: ./notification-service
     container_name: notification-service
     ports:
       - "8088:8088"
+    env_file:
+      - .env
     depends_on:
       - mysql
+      - discovery-service
       - kafka
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/notification_db
-      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
-      # Twilio Environment Variables (Set these on your machine, not in the file)
-      - TWILIO_ACCOUNT_SID
-      - TWILIO_AUTH_TOKEN
-      - TWILIO_PHONE_NUMBER
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - EUREKA_HOST=discovery-service
+      - KAFKA_HOST=kafka
+
+  analytics-service:
+    build: ./analytics-service
+    container_name: analytics-service
+    ports:
+      - "8089:8089"
+    depends_on:
+      - mysql
+      - discovery-service
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - EUREKA_HOST=discovery-service
+      - KAFKA_HOST=kafka
 
   frontend:
     build: ../frontend/ev-charge-web
     container_name: frontend
     ports:
       - "3000:80"
-
 
 volumes:
   mysql_data:

@@ -6,6 +6,7 @@ import com.twilio.rest.api.v2010.account.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +14,7 @@ import javax.annotation.PostConstruct;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@ConditionalOnProperty(name = "notification.whatsapp.provider", havingValue = "twilio", matchIfMissing = true)
 public class WhatsAppSender implements NotificationSender {
 
     @Value("${twilio.account-sid:}")

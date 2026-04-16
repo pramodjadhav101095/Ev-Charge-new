@@ -33,11 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id,
-            @RequestHeader(value = "X-User-Id", required = false) String userId,
-            @RequestHeader(value = "X-User-Roles", required = false) String roles) {
-        // Implement sec check if needed, e.g. if (!userId.equals(id.toString()) &&
-        // !roles.contains("ADMIN")) throw exception
+    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
         return ResponseEntity.ok(service.getUserById(id));
     }
 

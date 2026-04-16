@@ -4,19 +4,23 @@ server:
 spring:
   application:
     name: station-discovery-service
+
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:mysql}:3306/station_db?createDatabaseIfNotExist=true
+    url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/station_db?createDatabaseIfNotExist=true
     username: root
     password: ${MYSQL_PASSWORD:1qaz2wsx!@QW}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+
   data:
     redis:
       host: ${REDIS_HOST:redis}
-      port: 6379
+      port: ${REDIS_PORT:6379}
+
   kafka:
     bootstrap-servers: ${KAFKA_HOST:kafka}:${KAFKA_PORT:29092}
     producer:
@@ -32,12 +36,10 @@ spring:
 eureka:
   instance:
     prefer-ip-address: true
+    hostname: station-discovery-service
   client:
     service-url:
       defaultZone: http://${EUREKA_HOST:discovery-service}:8761/eureka/
-  instance:
-    prefer-ip-address: false
-    hostname: localhost
 
 management:
   endpoints:
@@ -51,7 +53,7 @@ ocpp:
 
 google:
   maps:
-    api-key: ${GOOGLE_MAPS_API_KEY}
+    api-key: ${GOOGLE_MAPS_API_KEY:dummy-key}
 
 logging:
   level:

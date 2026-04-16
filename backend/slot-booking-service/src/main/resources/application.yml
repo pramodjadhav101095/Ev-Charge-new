@@ -5,7 +5,7 @@ spring:
   application:
     name: slot-booking-service
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:mysql}:3306/booking_db?createDatabaseIfNotExist=true
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3307}/booking_db?createDatabaseIfNotExist=true
     username: root
     password: ${MYSQL_PASSWORD:1qaz2wsx!@QW}
   jpa:

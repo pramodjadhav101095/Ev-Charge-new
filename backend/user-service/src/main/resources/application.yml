@@ -4,8 +4,10 @@ server:
 spring:
   application:
     name: user-service
+  cache:
+    type: none
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:mysql}:3306/user_db?createDatabaseIfNotExist=true
+    url: jdbc:mysql://host.docker.internal:3306/user_db?createDatabaseIfNotExist=true
     username: root
     password: ${MYSQL_PASSWORD:1qaz2wsx!@QW}
     driver-class-name: com.mysql.cj.jdbc.Driver

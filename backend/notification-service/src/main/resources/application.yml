@@ -5,7 +5,7 @@ spring:
   application:
     name: notification-service
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:mysql}:3306/notification_db?createDatabaseIfNotExist=true
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3307}/notification_db?createDatabaseIfNotExist=true
     username: root
     password: ${MYSQL_PASSWORD:1qaz2wsx!@QW}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -44,11 +44,22 @@ eureka:
     service-url:
       defaultZone: http://${EUREKA_HOST:discovery-service}:8761/eureka/
 
-# Twilio Configuration (Set via Env Vars)
+# Notification Provider Selection
+notification:
+  whatsapp:
+    provider: ${NOTIFICATION_WHATSAPP_PROVIDER:twilio} # Switch here: twilio or gupshup
+
+# Twilio Configuration
 twilio:
   account-sid: ${TWILIO_ACCOUNT_SID}
   auth-token: ${TWILIO_AUTH_TOKEN}
   phone-number: ${TWILIO_PHONE_NUMBER}
+
+# Gupshup Configuration
+gupshup:
+  api-key: ${GUPSHUP_API_KEY:}
+  source-number: ${GUPSHUP_SOURCE_NUMBER:}
+  app-name: ${GUPSHUP_APP_NAME:}
 
 # Firebase Configuration
 firebase:
