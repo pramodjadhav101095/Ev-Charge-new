@@ -25,7 +25,7 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/stations/nearby/**", "/stations/{id}").permitAll()
+                        .requestMatchers("/stations/nearby", "/stations/nearby/**", "/stations/{id}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/stations/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/stations/**").hasRole("ADMIN")
                         .requestMatchers("/ocpp/**", "/actuator/**").permitAll()
