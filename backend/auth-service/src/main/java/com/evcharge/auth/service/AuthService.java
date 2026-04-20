@@ -39,7 +39,7 @@ public class AuthService {
     public String generateToken(String username) {
         UserCredential user = repository.findByName(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
-        return jwtService.generateToken(username, user.getRoles());
+        return jwtService.generateToken(username, user.getRoles(), String.valueOf(user.getId()));
     }
 
     public void validateToken(String token) {

@@ -38,6 +38,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 }
                 try {
                     jwtUtil.validateToken(authHeader);
+                    String userId = jwtUtil.extractUserId(authHeader);
+                    
+                    // Mutate the request to add the X-User-Id header
+                    exchange.getRequest().mutate()
+                            .header("X-User-Id", userId)
+                            .build();
+                            
                 } catch (Exception e) {
                     System.out.println("Invalid token access for: " + exchange.getRequest().getPath() + ", Reason: "
                             + e.getMessage());
