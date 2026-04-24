@@ -1,32 +1,40 @@
-# Maven
 target/
-*.log
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# Environment files
-.env
-
-# IDE files
-.idea/
-*.iml
-.project
+### STS ###
+.apt_generated
 .classpath
-.settings/
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
-# OS files
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### Mac OS ###
 .DS_Store
 
-# Crash logs
-hs_err_pid*
-
-# Node modules
-node_modules/
-
-# Maven
-target/
-
-# Logs
+### Others ###
 *.log
-
-# Env
-.envTwilio SId= AC65b548078ebcbe103f39a.txt
-Twilio SId= AC65b548078ebcbe103f39a.txt
+.env
+*.env

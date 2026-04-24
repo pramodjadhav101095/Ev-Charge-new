@@ -26,17 +26,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: 1qaz2wsx!@QW
-      MYSQL_DATABASE: auth_db
-    ports:
-      - "3315:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  # MySQL service removed as user is using local MySQL instance on host machine.
 
   redis:
     image: redis:6.2-alpine
@@ -69,7 +59,7 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - mysql
+#      - mysql
       - discovery-service
       - kafka
     environment:
@@ -78,6 +68,7 @@ services:
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
+      - KAFKA_PORT=29092
 
   user-service:
     build: ./user-service
@@ -85,7 +76,7 @@ services:
     ports:
       - "8082:8082"
     depends_on:
-      - mysql
+#      - mysql
       - discovery-service
       - kafka
     environment:
@@ -94,6 +85,7 @@ services:
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
+      - KAFKA_PORT=29092
 
   station-discovery-service:
     build: ./station-discovery-service
@@ -103,7 +95,7 @@ services:
     env_file:
       - .env
     depends_on:
-      - mysql
+#      - mysql
       - redis
       - discovery-service
       - kafka
@@ -113,6 +105,7 @@ services:
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
+      - KAFKA_PORT=29092
       - REDIS_HOST=redis
       - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
 
@@ -122,7 +115,7 @@ services:
     ports:
       - "8084:8084"
     depends_on:
-      - mysql
+#      - mysql
       - redis
       - discovery-service
       - kafka
@@ -132,6 +125,7 @@ services:
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
+      - KAFKA_PORT=29092
       - REDIS_HOST=redis
 
   payment-service:
@@ -140,7 +134,7 @@ services:
     ports:
       - "8085:8085"
     depends_on:
-      - mysql
+#      - mysql
       - discovery-service
       - kafka
     environment:
@@ -149,6 +143,7 @@ services:
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
+      - KAFKA_PORT=29092
 
   charging-session-service:
     build: ./charging-session-service
@@ -156,7 +151,7 @@ services:
     ports:
       - "8086:8086"
     depends_on:
-      - mysql
+#      - mysql
       - discovery-service
       - kafka
       - redis
@@ -166,6 +161,7 @@ services:
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
+      - KAFKA_PORT=29092
       - REDIS_HOST=redis
 
   admin-service:
@@ -174,7 +170,7 @@ services:
     ports:
       - "8087:8087"
     depends_on:
-      - mysql
+#      - mysql
       - discovery-service
       - kafka
     environment:
@@ -183,6 +179,7 @@ services:
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
+      - KAFKA_PORT=29092
 
   notification-service:
     build: ./notification-service
@@ -192,7 +189,7 @@ services:
     env_file:
       - .env
     depends_on:
-      - mysql
+#      - mysql
       - discovery-service
       - kafka
     environment:
@@ -201,6 +198,7 @@ services:
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
+      - KAFKA_PORT=29092
 
   analytics-service:
     build: ./analytics-service
@@ -208,7 +206,7 @@ services:
     ports:
       - "8089:8089"
     depends_on:
-      - mysql
+#      - mysql
       - discovery-service
       - kafka
     environment:
@@ -217,6 +215,7 @@ services:
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
+      - KAFKA_PORT=29092
 
   frontend:
     build: ../frontend/ev-charge-web

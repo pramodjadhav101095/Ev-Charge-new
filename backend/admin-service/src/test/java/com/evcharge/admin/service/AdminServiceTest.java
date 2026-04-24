@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -75,7 +76,7 @@ class AdminServiceTest {
     @Test
     void updateUserRole_logsAction() {
         doNothing().when(userClient).updateUserRole(1L, "ADMIN");
-        when(adminLogRepository.save(any(AdminLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(adminLogRepository.save(any(AdminLog.class))).thenReturn(null);
 
         adminService.updateUserRole(1L, "ADMIN");
 
@@ -90,7 +91,7 @@ class AdminServiceTest {
     @Test
     void deleteUser_logsAction() {
         doNothing().when(userClient).deleteUser(1L);
-        when(adminLogRepository.save(any(AdminLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(adminLogRepository.save(any(AdminLog.class))).thenReturn(null);
 
         adminService.deleteUser(1L);
 
@@ -123,7 +124,7 @@ class AdminServiceTest {
         StationResponse station = StationResponse.builder().name("Station1").location("Location1").status("PENDING").build();
         StationResponse createdStation = StationResponse.builder().id(1L).name("Station1").location("Location1").status("PENDING").build();
         when(stationClient.createStation(station)).thenReturn(createdStation);
-        when(adminLogRepository.save(any(AdminLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(adminLogRepository.save(any(AdminLog.class))).thenReturn(null);
 
         StationResponse result = adminService.createStation(station);
 
@@ -139,8 +140,8 @@ class AdminServiceTest {
     @Test
     void approveStation_logsActionAndSendsKafkaMessage() {
         doNothing().when(stationClient).approveStation(1L);
-        when(kafkaTemplate.send(anyString(), any())).thenReturn(null);
-        when(adminLogRepository.save(any(AdminLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(kafkaTemplate.send(anyString(), anyString())).thenReturn(new CompletableFuture<>());
+        when(adminLogRepository.save(any(AdminLog.class))).thenReturn(null);
 
         adminService.approveStation(1L);
 

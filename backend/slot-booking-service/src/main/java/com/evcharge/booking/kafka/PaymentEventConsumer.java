@@ -1,5 +1,6 @@
 package com.evcharge.booking.kafka;
 
+import com.evcharge.payment.event.PaymentEvent;
 import com.evcharge.booking.service.BookingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -92,20 +92,22 @@ public class BookingService {
             Booking booking = bookingMapper.toEntity(request);
             booking.setUserId(userId);
             booking.setStationName(stationName);
-            booking.setStatus(BookingStatus.PENDING); // Start as PENDING until payment
+            booking.setStatus(BookingStatus.CONFIRMED);
             booking.setEstimatedCost(calculateEstimatedCost(request));
 
             Booking saved = bookingRepository.save(booking);
             log.info("Booking created successfully: id={}", saved.getId());
 
-            // Publish Kafka event (only Created, not Confirmed yet)
-            BookingEvent event = buildBookingEvent(saved, "PENDING");
+            // Publish Kafka events
+            BookingEvent event = buildBookingEvent(saved, "CONFIRMED");
             eventProducer.publishBookingCreated(event);
+            eventProducer.publishBookingConfirmed(event);
 
             return bookingMapper.toResponse(saved);
 
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+
+Thread.currentThread().interrupt();
             throw new SlotUnavailableException("Booking interrupted. Please try again.");
         } finally {
             if (lock.isHeldByCurrentThread()) {
@@ -143,22 +145,6 @@ public class BookingService {
         eventProducer.publishBookingCancelled(buildBookingEvent(saved, "CANCELLED"));
 
         return bookingMapper.toResponse(saved);
-    }
-
-    @Transactional
-    public void confirmBooking(Long bookingId) {
-        log.info("Confirming booking: id={}", bookingId);
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException("Booking not found: " + bookingId));
-
-        if (booking.getStatus() == BookingStatus.PENDING) {
-            booking.setStatus(BookingStatus.CONFIRMED);
-            bookingRepository.save(booking);
-            log.info("Booking {} confirmed after payment", bookingId);
-            
-            // Notify other services that booking is now CONFIRMED
-            eventProducer.publishBookingConfirmed(buildBookingEvent(booking, "CONFIRMED"));
-        }
     }
 
     // ─── Get Booking by ID ───────────────────────────────────────────
@@ -216,7 +202,8 @@ public class BookingService {
                 availableSlots.add(slot);
             } else if (isBooked) {
                 bookedSlots.add(slot);
-            }
+
+}
 
             slotStart = slotEnd;
         }
@@ -285,5 +272,19 @@ public class BookingService {
                 .estimatedCost(booking.getEstimatedCost())
                 .eventTimestamp(LocalDateTime.now())
                 .build();
+    }
+    
+    // Recovery for confirmBooking since it was added recently!
+    @Transactional
+    public BookingResponse confirmBooking(Long bookingId) {
+        log.info("Confirming booking id: {}", bookingId);
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found: " + bookingId));
+        
+        booking.setStatus(BookingStatus.CONFIRMED);
+        Booking saved = bookingRepository.save(booking);
+        
+        eventProducer.publishBookingConfirmed(buildBookingEvent(saved, "CONFIRMED"));
+        return bookingMapper.toResponse(saved);
     }
 }
