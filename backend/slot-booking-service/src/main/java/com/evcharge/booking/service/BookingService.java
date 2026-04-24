@@ -92,16 +92,15 @@ public class BookingService {
             Booking booking = bookingMapper.toEntity(request);
             booking.setUserId(userId);
             booking.setStationName(stationName);
-            booking.setStatus(BookingStatus.CONFIRMED);
+            booking.setStatus(BookingStatus.PENDING); // Start as PENDING until payment
             booking.setEstimatedCost(calculateEstimatedCost(request));
 
             Booking saved = bookingRepository.save(booking);
             log.info("Booking created successfully: id={}", saved.getId());
 
-            // Publish Kafka events
-            BookingEvent event = buildBookingEvent(saved, "CONFIRMED");
+            // Publish Kafka event (only Created, not Confirmed yet)
+            BookingEvent event = buildBookingEvent(saved, "PENDING");
             eventProducer.publishBookingCreated(event);
-            eventProducer.publishBookingConfirmed(event);
 
             return bookingMapper.toResponse(saved);
 
@@ -144,6 +143,22 @@ public class BookingService {
         eventProducer.publishBookingCancelled(buildBookingEvent(saved, "CANCELLED"));
 
         return bookingMapper.toResponse(saved);
+    }
+
+    @Transactional
+    public void confirmBooking(Long bookingId) {
+        log.info("Confirming booking: id={}", bookingId);
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new BookingNotFoundException("Booking not found: " + bookingId));
+
+        if (booking.getStatus() == BookingStatus.PENDING) {
+            booking.setStatus(BookingStatus.CONFIRMED);
+            bookingRepository.save(booking);
+            log.info("Booking {} confirmed after payment", bookingId);
+            
+            // Notify other services that booking is now CONFIRMED
+            eventProducer.publishBookingConfirmed(buildBookingEvent(booking, "CONFIRMED"));
+        }
     }
 
     // ─── Get Booking by ID ───────────────────────────────────────────

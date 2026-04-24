@@ -13,6 +13,7 @@ public class RouteValidator {
                         "/auth/register",
                         "/auth/token",
                         "/stations/nearby",
+                        "/payments/webhook",
                         "/eureka");
 
         public Predicate<ServerHttpRequest> isSecured = request -> openApiEndpoints

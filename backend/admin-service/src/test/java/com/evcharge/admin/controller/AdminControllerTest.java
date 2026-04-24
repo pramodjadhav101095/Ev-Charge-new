@@ -18,6 +18,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @WebMvcTest(AdminController.class)
 class AdminControllerTest {
@@ -58,7 +59,7 @@ class AdminControllerTest {
     void updateUserRole_returnsNoContent_andCallsService() throws Exception {
         doNothing().when(adminService).updateUserRole(42L, "ROLE_MANAGER");
 
-        mockMvc.perform(put("/admin/users/42/role").param("role", "ROLE_MANAGER"))
+        mockMvc.perform(put("/admin/users/42/role").param("role", "ROLE_MANAGER").with(csrf()))
                 .andExpect(status().isNoContent());
 
         verify(adminService, times(1)).updateUserRole(42L, "ROLE_MANAGER");
@@ -73,7 +74,7 @@ class AdminControllerTest {
     void deleteUser_returnsNoContent_andCallsService() throws Exception {
         doNothing().when(adminService).deleteUser(5L);
 
-        mockMvc.perform(delete("/admin/users/5"))
+        mockMvc.perform(delete("/admin/users/5").with(csrf()))
                 .andExpect(status().isNoContent());
 
         verify(adminService, times(1)).deleteUser(5L);
@@ -110,7 +111,8 @@ class AdminControllerTest {
 
         mockMvc.perform(post("/admin/stations")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(input)))
+                        .content(objectMapper.writeValueAsString(input))
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(99))
                 .andExpect(jsonPath("$.name").value("New Station"));
@@ -127,7 +129,7 @@ class AdminControllerTest {
     void approveStation_returnsNoContent_andCallsService() throws Exception {
         doNothing().when(adminService).approveStation(77L);
 
-        mockMvc.perform(put("/admin/stations/77/approve"))
+        mockMvc.perform(put("/admin/stations/77/approve").with(csrf()))
                 .andExpect(status().isNoContent());
 
         verify(adminService, times(1)).approveStation(77L);

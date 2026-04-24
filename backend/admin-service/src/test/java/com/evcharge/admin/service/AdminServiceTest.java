@@ -75,7 +75,7 @@ class AdminServiceTest {
     @Test
     void updateUserRole_logsAction() {
         doNothing().when(userClient).updateUserRole(1L, "ADMIN");
-        doNothing().when(adminLogRepository).save(any(AdminLog.class));
+        when(adminLogRepository.save(any(AdminLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         adminService.updateUserRole(1L, "ADMIN");
 
@@ -90,7 +90,7 @@ class AdminServiceTest {
     @Test
     void deleteUser_logsAction() {
         doNothing().when(userClient).deleteUser(1L);
-        doNothing().when(adminLogRepository).save(any(AdminLog.class));
+        when(adminLogRepository.save(any(AdminLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         adminService.deleteUser(1L);
 
@@ -123,7 +123,7 @@ class AdminServiceTest {
         StationResponse station = StationResponse.builder().name("Station1").location("Location1").status("PENDING").build();
         StationResponse createdStation = StationResponse.builder().id(1L).name("Station1").location("Location1").status("PENDING").build();
         when(stationClient.createStation(station)).thenReturn(createdStation);
-        doNothing().when(adminLogRepository).save(any(AdminLog.class));
+        when(adminLogRepository.save(any(AdminLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         StationResponse result = adminService.createStation(station);
 
@@ -139,8 +139,8 @@ class AdminServiceTest {
     @Test
     void approveStation_logsActionAndSendsKafkaMessage() {
         doNothing().when(stationClient).approveStation(1L);
-        doNothing().when(kafkaTemplate).send(anyString(), anyString());
-        doNothing().when(adminLogRepository).save(any(AdminLog.class));
+        when(kafkaTemplate.send(anyString(), any())).thenReturn(null);
+        when(adminLogRepository.save(any(AdminLog.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         adminService.approveStation(1L);
 
