@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-    Box, Typography, Card, CardContent, Grid,
-    Button, Divider, Table, TableBody, TableCell,
-    TableContainer, TableHead, TableRow, Paper, Chip
+    Box, Typography, Card, CardContent,
+    Button, Table, TableBody, TableCell,
+    TableContainer, TableHead, TableRow, Paper
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { endSession as apiEndSession } from '../../api/sessionApi';

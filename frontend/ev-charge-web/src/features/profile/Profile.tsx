@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
     Box, Container, Paper, Typography, Avatar,
-    Tabs, Tab, Divider, Chip, CircularProgress
+    Tabs, Tab, Divider, Chip, CircularProgress,
+    Snackbar, Alert
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -29,6 +30,11 @@ const Profile: React.FC = () => {
     const dispatch = useDispatch();
     const { profile, loading } = useSelector((state: RootState) => state.user);
     const [tabValue, setTabValue] = useState(0);
+    const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({
+        open: false,
+        message: '',
+        severity: 'success',
+    });
 
     useEffect(() => {
         const loadProfile = async () => {
@@ -47,8 +53,18 @@ const Profile: React.FC = () => {
         try {
             const response = await updateUserProfile(values);
             dispatch(updateProfileSuccess(response.data));
-        } catch (err) {
+            setSnackbar({
+                open: true,
+                message: 'Profile updated successfully!',
+                severity: 'success',
+            });
+        } catch (err: any) {
             console.error('Update failed', err);
+            setSnackbar({
+                open: true,
+                message: err.response?.data?.message || 'Failed to update profile',
+                severity: 'error',
+            });
         }
     };
 
@@ -125,6 +141,21 @@ const Profile: React.FC = () => {
                     </TabPanel>
                 </Box>
             </Paper>
+
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={4000}
+                onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+                    severity={snackbar.severity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 };

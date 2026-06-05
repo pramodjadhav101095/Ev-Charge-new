@@ -34,7 +34,15 @@ public class PaymentController {
 
     @PostMapping("/verify-mock")
     public ResponseEntity<PaymentResponse> verifyMockPayment(@RequestBody PaymentVerificationRequest request) {
-        return ResponseEntity.ok(paymentService.verifyMockPayment(request));
+        log.info("Received verify-mock request for order ID: {}", request.getRazorpayOrderId());
+        try {
+            PaymentResponse response = paymentService.verifyMockPayment(request);
+            log.info("verify-mock successful for order ID: {}", request.getRazorpayOrderId());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("verify-mock failed for order ID: {}", request.getRazorpayOrderId(), e);
+            throw e;
+        }
     }
 
     @GetMapping("/{id}")
@@ -48,5 +56,10 @@ public class PaymentController {
             @RequestHeader(value = "X-User-Id", required = false) String headerUserId) {
         // In a real app, we'd validate headerUserId matches userId or user is Admin
         return ResponseEntity.ok(paymentService.getUserTransactions(userId));
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<PaymentResponse>> getPaymentHistory() {
+        return ResponseEntity.ok(paymentService.getAllPayments());
     }
 }

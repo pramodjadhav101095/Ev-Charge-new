@@ -1,9 +1,7 @@
 import React from 'react';
-import { Container, Grid, Typography, Box, Paper, Fab } from '@mui/material';
+import { Container, Grid, Typography, Box } from '@mui/material';
 import BookingForm from './BookingForm';
 import BookingsList from './BookingsList';
-import HistoryIcon from '@mui/icons-material/History';
-import AddIcon from '@mui/icons-material/Add';
 
 const Bookings: React.FC = () => {
     return (

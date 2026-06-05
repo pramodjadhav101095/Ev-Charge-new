@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Grid, Fab, useMediaQuery, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
-import { fetchStations, setFilters } from './stationsSlice';
+import { fetchStations, setFilters } from '../../store/slices/stationsSlice';
 import StationList from './StationList';
 import Filters from './Filters';
 import StationMap from '../../components/StationMap';

@@ -12,6 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,6 +50,34 @@ public class WhatsAppSenderTest {
 
             // Verify that Twilio's Message.creator() and create() were called once
             mockedMessage.verify(() -> Message.creator(any(com.twilio.type.PhoneNumber.class), any(com.twilio.type.PhoneNumber.class), anyString()), times(1));
+            verify(creator, times(1)).create();
+        }
+    }
+
+    @Test
+    void testSendWhatsApp_FormattingRequired() {
+        // We use MockedStatic to mock the static Message.creator() method of Twilio SDK
+        try (MockedStatic<Message> mockedMessage = mockStatic(Message.class)) {
+            MessageCreator creator = mock(MessageCreator.class);
+            Message mockMessageResult = mock(Message.class);
+
+            // Mock the fluent API chain: Message.creator(...).create()
+            mockedMessage.when(() -> Message.creator(
+                    any(com.twilio.type.PhoneNumber.class),
+                    any(com.twilio.type.PhoneNumber.class),
+                    anyString())).thenReturn(creator);
+            
+            when(creator.create()).thenReturn(mockMessageResult);
+            when(mockMessageResult.getSid()).thenReturn("SM12345");
+
+            // Execute the send with a non-E.164 10-digit phone number
+            whatsAppSender.send("1234567890", "Booking Confirmed", "Your slot is ready!");
+
+            // Verify that Twilio's Message.creator() was called once with the formatted recipient
+            mockedMessage.verify(() -> Message.creator(
+                    eq(new com.twilio.type.PhoneNumber("whatsapp:+911234567890")),
+                    any(com.twilio.type.PhoneNumber.class),
+                    anyString()), times(1));
             verify(creator, times(1)).create();
         }
     }

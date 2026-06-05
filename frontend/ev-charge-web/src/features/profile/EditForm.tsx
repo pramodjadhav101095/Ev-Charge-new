@@ -35,7 +35,7 @@ const EditForm: React.FC<EditFormProps> = ({ initialValues, onSubmit }) => {
                         value={formik.values.firstName}
                         onChange={formik.handleChange}
                         error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                        helperText={formik.touched.firstName && formik.errors.firstName}
+                        helperText={formik.touched.firstName ? (formik.errors.firstName as string) : ''}
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -47,7 +47,7 @@ const EditForm: React.FC<EditFormProps> = ({ initialValues, onSubmit }) => {
                         value={formik.values.lastName}
                         onChange={formik.handleChange}
                         error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                        helperText={formik.touched.lastName && formik.errors.lastName}
+                        helperText={formik.touched.lastName ? (formik.errors.lastName as string) : ''}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -59,7 +59,7 @@ const EditForm: React.FC<EditFormProps> = ({ initialValues, onSubmit }) => {
                         value={formik.values.email}
                         onChange={formik.handleChange}
                         error={formik.touched.email && Boolean(formik.errors.email)}
-                        helperText={formik.touched.email && formik.errors.email}
+                        helperText={formik.touched.email ? (formik.errors.email as string) : ''}
                     />
                 </Grid>
                 <Grid item xs={12}>
@@ -71,7 +71,7 @@ const EditForm: React.FC<EditFormProps> = ({ initialValues, onSubmit }) => {
                         value={formik.values.phone}
                         onChange={formik.handleChange}
                         error={formik.touched.phone && Boolean(formik.errors.phone)}
-                        helperText={formik.touched.phone && formik.errors.phone}
+                        helperText={formik.touched.phone ? (formik.errors.phone as string) : ''}
                     />
                 </Grid>
             </Grid>

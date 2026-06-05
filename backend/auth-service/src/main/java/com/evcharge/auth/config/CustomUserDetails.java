@@ -12,18 +12,21 @@ import java.util.stream.Collectors;
 
 public class CustomUserDetails implements UserDetails {
 
-    private String name;
+    private String username;
     private String password;
     private List<GrantedAuthority> authorities;
 
     public CustomUserDetails(UserCredential userCredential) {
-        this.name = userCredential.getName();
+        this.username = userCredential.getUsername();
         this.password = userCredential.getPassword();
         // Assuming roles are stored as comma separated string "ROLE_USER,ROLE_ADMIN"
         if (userCredential.getRoles() != null && !userCredential.getRoles().isEmpty()) {
              this.authorities = Arrays.stream(userCredential.getRoles().split(","))
+                .map(role -> role.trim().startsWith("ROLE_") ? role.trim() : "ROLE_" + role.trim())
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+        } else {
+             this.authorities = java.util.Collections.emptyList();
         }
        
     }
@@ -40,7 +43,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     @Override

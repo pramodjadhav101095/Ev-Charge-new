@@ -1,0 +1,11 @@
+target/classes
+target/maven-status
+target/maven-archiver
+target/generated-sources
+target/generated-test-sources
+target/test-classes
+.classpath
+.project
+.settings
+.idea
+*.log

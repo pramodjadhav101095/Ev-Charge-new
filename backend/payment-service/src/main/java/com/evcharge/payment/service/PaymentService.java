@@ -110,6 +110,10 @@ public class PaymentService {
         return mapper.toResponseList(repository.findByUserId(userId));
     }
 
+    public List<PaymentResponse> getAllPayments() {
+        return mapper.toResponseList(repository.findAll());
+    }
+
     public PaymentResponse getPaymentById(Long id) {
         return mapper.toResponse(repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Payment not found")));

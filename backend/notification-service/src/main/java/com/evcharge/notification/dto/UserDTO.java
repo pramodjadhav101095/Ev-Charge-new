@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class UserDTO {
     private Long id;
     private String email;
-    private String phoneNumber;
+    private String phone;
     private String username;
     private String deviceToken; // For push notifications
 }

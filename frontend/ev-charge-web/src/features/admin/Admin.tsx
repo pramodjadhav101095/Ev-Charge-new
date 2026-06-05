@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Box, Tabs, Tab, Typography, Paper, Alert } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
-import { fetchAdminData } from './adminSlice';
+import { fetchAdminData } from '../../store/slices/adminSlice';
 import UsersTab from './UsersTab';
 import StationsTab from './StationsTab';
 import SessionsTab from './SessionsTab';

@@ -9,10 +9,13 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { setSelectedStation } from './stationsSlice';
+import { setSelectedStation } from '../../store/slices/stationsSlice';
+import { useNavigate } from 'react-router-dom';
+import { updateBookingDetails } from '../../store/slices/bookingsSlice';
 
 const StationDetailsModal: React.FC = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { selectedStation } = useSelector((state: RootState) => state.stations);
 
     const handleClose = () => {
@@ -76,7 +79,18 @@ const StationDetailsModal: React.FC = () => {
             </DialogContent>
             <Box sx={{ p: 2, display: 'flex', gap: 2 }}>
                 <Button fullWidth variant="outlined" onClick={handleClose}>Close</Button>
-                <Button fullWidth variant="contained" color="success">Book Slot</Button>
+                <Button 
+                    fullWidth 
+                    variant="contained" 
+                    color="success"
+                    onClick={() => {
+                        dispatch(updateBookingDetails({ stationId: selectedStation.id, step: 0 }));
+                        dispatch(setSelectedStation(null));
+                        navigate('/bookings');
+                    }}
+                >
+                    Book Slot
+                </Button>
             </Box>
         </Dialog>
     );

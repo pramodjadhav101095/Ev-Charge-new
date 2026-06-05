@@ -6,6 +6,7 @@ interface Vehicle {
     model: string;
     year: number;
     licensePlate: string;
+    type?: string;
 }
 
 interface UserState {

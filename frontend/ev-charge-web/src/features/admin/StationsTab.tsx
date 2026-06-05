@@ -4,7 +4,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store';
 import { deleteStation } from '../../api/adminApi';
-import { removeLocalStation } from './adminSlice';
+import { removeLocalStation } from '../../store/slices/adminSlice';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';

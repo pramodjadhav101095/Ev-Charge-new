@@ -20,6 +20,12 @@ public class StationController {
 
     private final StationService service;
 
+    // 0. Get All Stations
+    @GetMapping
+    public ResponseEntity<List<StationDto>> getAllStations() {
+        return ResponseEntity.ok(service.getAllStations());
+    }
+
     // 1. Test Endpoint - Must stay BEFORE the {id} mapping
     @GetMapping("/test")
     public ResponseEntity<String> testStationService() {
@@ -58,6 +64,13 @@ public class StationController {
             @RequestParam StationStatus status) {
 
         return ResponseEntity.ok(service.updateStationStatus(id, status));
+    }
+
+    // 6. Approve Station
+    @PutMapping("/{id:\\d+}/approve")
+    public ResponseEntity<Void> approveStation(@PathVariable Long id) {
+        service.approveStation(id);
+        return ResponseEntity.noContent().build();
     }
 
     // ====================== Exception Handler ======================

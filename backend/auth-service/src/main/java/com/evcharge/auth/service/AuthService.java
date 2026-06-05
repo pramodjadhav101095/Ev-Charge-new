@@ -24,10 +24,13 @@ public class AuthService {
 
     public String saveUser(UserCredential credential) {
         credential.setPassword(passwordEncoder.encode(credential.getPassword()));
+        if (credential.getRoles() == null || credential.getRoles().isEmpty()) {
+            credential.setRoles("ROLE_USER");
+        }
         repository.save(credential);
 
         UserRegistrationDto userDto = UserRegistrationDto.builder()
-                .username(credential.getName())
+                .username(credential.getUsername())
                 .email(credential.getEmail())
                 .roles(credential.getRoles())
                 .build();
@@ -37,9 +40,14 @@ public class AuthService {
     }
 
     public String generateToken(String username) {
-        UserCredential user = repository.findByName(username)
+        UserCredential user = repository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found: " + username));
         return jwtService.generateToken(username, user.getRoles(), String.valueOf(user.getId()));
+    }
+
+    public UserCredential getUserByUsername(String username) {
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
     }
 
     public void validateToken(String token) {

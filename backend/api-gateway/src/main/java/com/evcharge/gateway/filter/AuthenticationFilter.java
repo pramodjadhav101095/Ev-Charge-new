@@ -39,11 +39,14 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 try {
                     jwtUtil.validateToken(authHeader);
                     String userId = jwtUtil.extractUserId(authHeader);
+                    String username = jwtUtil.extractUsername(authHeader);
                     
-                    // Mutate the request to add the X-User-Id header
-                    exchange.getRequest().mutate()
+                    // Mutate the request to add the X-User-Id and X-User-Name headers
+                    org.springframework.http.server.reactive.ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
                             .header("X-User-Id", userId)
+                            .header("X-User-Name", username)
                             .build();
+                    return chain.filter(exchange.mutate().request(mutatedRequest).build());
                             
                 } catch (Exception e) {
                     System.out.println("Invalid token access for: " + exchange.getRequest().getPath() + ", Reason: "

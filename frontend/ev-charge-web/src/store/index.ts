@@ -4,6 +4,9 @@ import userReducer from './slices/userSlice';
 import stationsReducer from './slices/stationsSlice';
 import bookingsReducer from './slices/bookingsSlice';
 import notificationsReducer from './slices/notificationsSlice';
+import adminReducer from './slices/adminSlice';
+import analyticsReducer from './slices/analyticsSlice';
+import sessionsReducer from './slices/sessionsSlice';
 
 export const store = configureStore({
     reducer: {
@@ -12,6 +15,9 @@ export const store = configureStore({
         stations: stationsReducer,
         bookings: bookingsReducer,
         notifications: notificationsReducer,
+        admin: adminReducer,
+        analytics: analyticsReducer,
+        sessions: sessionsReducer,
     },
 });
 

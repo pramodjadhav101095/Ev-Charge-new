@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Button, Chip } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../../store';
 import { updateUserRole, deleteUser } from '../../api/adminApi';
-import { updateLocalUserStatus } from './adminSlice';
+import { updateLocalUserStatus } from '../../store/slices/adminSlice';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 

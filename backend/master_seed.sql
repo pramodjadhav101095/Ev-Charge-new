@@ -23,15 +23,15 @@ INSERT INTO users (username, email, phone, roles, vehicle_info) VALUES
 USE auth_db;
 CREATE TABLE IF NOT EXISTS user_credential (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255),
+    username VARCHAR(255),
     email VARCHAR(255) UNIQUE,
     password VARCHAR(255),
     roles VARCHAR(255)
 );
 -- password is 'password123' hashed with bcrypt
-INSERT INTO user_credential (name, email, password, roles) VALUES 
-('John Doe', 'john@example.com', '$2a$10$ByIUiNa.7p77C38865oBkezS9PzVp3yVnNpP7/bNoS1Lp6Y./B8S.', 'ROLE_USER'),
-('Jane Admin', 'jane@example.com', '$2a$10$ByIUiNa.7p77C38865oBkezS9PzVp3yVnNpP7/bNoS1Lp6Y./B8S.', 'ROLE_ADMIN');
+INSERT INTO user_credential (username, email, password, roles) VALUES 
+('john_doe', 'john@example.com', '$2a$10$ByIUiNa.7p77C38865oBkezS9PzVp3yVnNpP7/bNoS1Lp6Y./B8S.', 'ROLE_USER'),
+('jane_admin', 'jane@example.com', '$2a$10$ByIUiNa.7p77C38865oBkezS9PzVp3yVnNpP7/bNoS1Lp6Y./B8S.', 'ROLE_ADMIN');
 
 -- 4. Seed Station Discovery Service
 USE station_db;

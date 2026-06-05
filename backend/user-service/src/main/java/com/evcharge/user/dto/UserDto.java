@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 
 @AllArgsConstructor
@@ -22,6 +23,8 @@ public class UserDto implements Serializable {
     private String email;
 
     private String phone;
+
+    @JsonProperty("role")
     private String roles;
     private String vehicleInfo;
 
@@ -58,6 +61,9 @@ public class UserDto implements Serializable {
     }
 
     public String getRoles() {
+        if (roles != null && roles.startsWith("ROLE_")) {
+            return roles.substring(5);
+        }
         return roles;
     }
 

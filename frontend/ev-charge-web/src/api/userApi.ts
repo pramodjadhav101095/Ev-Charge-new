@@ -1,11 +1,11 @@
 import api from './axios';
 
 export const getUserProfile = async () => {
-    return await api.get('/users/profile');
+    return await api.get('/users/me');
 };
 
 export const updateUserProfile = async (data: any) => {
-    return await api.put('/users/profile', data);
+    return await api.put('/users/me', data);
 };
 
 export const getVehicles = async () => {

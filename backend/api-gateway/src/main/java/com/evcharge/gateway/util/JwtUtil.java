@@ -26,6 +26,15 @@ public class JwtUtil {
         return claims.get("userId", String.class);
     }
 
+    public String extractUsername(String token) {
+        final Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getSubject();
+    }
+
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);

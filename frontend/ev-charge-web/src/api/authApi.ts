@@ -1,7 +1,7 @@
 import axios from './axios';
 
 export const login = async (credentials: any) => {
-    const response = await axios.post('/auth/login', credentials);
+    const response = await axios.post('/auth/token', credentials);
     return response.data;
 };
 

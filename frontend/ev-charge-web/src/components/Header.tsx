@@ -1,7 +1,6 @@
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Badge, Avatar, Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';

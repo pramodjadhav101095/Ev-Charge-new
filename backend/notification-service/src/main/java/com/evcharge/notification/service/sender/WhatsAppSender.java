@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 @Service
 @RequiredArgsConstructor
@@ -38,20 +38,35 @@ public class WhatsAppSender implements NotificationSender {
 
     @Override
     public void send(String recipient, String subject, String content) {
+        String formattedRecipient = recipient;
+        if (formattedRecipient != null && !formattedRecipient.startsWith("+")) {
+            formattedRecipient = formattedRecipient.trim();
+            while (formattedRecipient.startsWith("0")) {
+                formattedRecipient = formattedRecipient.substring(1);
+            }
+            if (formattedRecipient.length() == 10) {
+                formattedRecipient = "+91" + formattedRecipient;
+            } else {
+                formattedRecipient = "+" + formattedRecipient;
+            }
+            log.info("Formatted phone number from {} to {} for Twilio compliance", recipient, formattedRecipient);
+        }
+
         if (accountSid.isEmpty() || authToken.isEmpty()) {
-            log.info("MOCK WHATSAPP: To {}, Content: {}", recipient, content);
+            log.info("MOCK WHATSAPP: To {}, Content: {}", formattedRecipient, content);
             return;
         }
 
         try {
             Message message = Message.creator(
-                    new com.twilio.type.PhoneNumber("whatsapp:" + recipient),
+                    new com.twilio.type.PhoneNumber("whatsapp:" + formattedRecipient),
                     new com.twilio.type.PhoneNumber("whatsapp:" + twilioNumber),
                     content)
                     .create();
             log.info("WhatsApp message sent. SID: {}", message.getSid());
         } catch (Exception e) {
-            log.error("Failed to send WhatsApp message to {}", recipient, e);
+            log.error("Failed to send WhatsApp message to {}", formattedRecipient, e);
+            throw new RuntimeException("Twilio sending failed: " + e.getMessage(), e);
         }
     }
 

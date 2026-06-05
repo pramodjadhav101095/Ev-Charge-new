@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getBookings, createBooking as apiCreateBooking, cancelBooking as apiCancelBooking } from '../../api/bookingApi';
+import { getBookings } from '../../api/bookingApi';
 
 export const fetchBookings = createAsyncThunk(
     'bookings/fetchBookings',
@@ -23,6 +23,8 @@ interface BookingsState {
         slotId: string | null;
         date: string | null;
         vehicleId: string | null;
+        slotStartTime: string | null;
+        slotEndTime: string | null;
     };
 }
 
@@ -36,6 +38,8 @@ const initialState: BookingsState = {
         slotId: null,
         date: null,
         vehicleId: null,
+        slotStartTime: null,
+        slotEndTime: null,
     },
 };
 

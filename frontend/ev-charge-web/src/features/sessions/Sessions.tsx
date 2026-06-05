@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Container, Grid, Typography, Box, Paper, Divider, CircularProgress } from '@mui/material';
+import { Container, Grid, Typography, Box, Paper, CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { getActiveSessions, getSessionHistory } from '../../api/sessionApi';

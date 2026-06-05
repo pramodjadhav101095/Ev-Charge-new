@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class SmsSender implements NotificationSender {
 
-    @Value("${twilio.account-sid}")
+    @Value("${twilio.account-sid:}")
     private String accountSid;
 
-    @Value("${twilio.auth-token}")
+    @Value("${twilio.auth-token:}")
     private String authToken;
 
-    @Value("${twilio.phone-number}")
+    @Value("${twilio.phone-number:}")
     private String fromPhoneNumber;
 
     @PostConstruct

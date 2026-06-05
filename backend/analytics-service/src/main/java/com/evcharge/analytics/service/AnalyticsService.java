@@ -59,4 +59,11 @@ public class AnalyticsService {
                 .confidence("MEDIUM")
                 .build();
     }
+
+    public AnalyticsResponse getSummary() {
+        return AnalyticsResponse.builder()
+                .metricName("TOTAL_REVENUE")
+                .value(12500.0)
+                .build();
+    }
 }

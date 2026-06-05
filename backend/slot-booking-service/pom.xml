@@ -25,6 +25,14 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
+<!-- pom.xml -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <optional>true</optional>
+</dependency>
+
+
 		<!-- OpenFeign -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -116,6 +124,7 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
 						</path>
 						<path>
 							<groupId>org.projectlombok</groupId>

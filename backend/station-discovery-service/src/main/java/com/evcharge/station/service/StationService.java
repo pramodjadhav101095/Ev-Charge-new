@@ -95,4 +95,19 @@ public class StationService {
                 .map(mapper::toDto)
                 .orElseThrow(() -> new RuntimeException("Station not found: " + id));
     }
+
+    public List<StationDto> getAllStations() {
+        return repository.findAll().stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void approveStation(Long id) {
+        ChargingStation station = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Station not found: " + id));
+        station.setStatus(StationStatus.AVAILABLE);
+        repository.save(station);
+        kafkaProducer.sendStationStatusChanged(id, StationStatus.AVAILABLE.name());
+    }
 }

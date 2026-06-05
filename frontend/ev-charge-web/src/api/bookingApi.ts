@@ -1,7 +1,14 @@
 import api from './axios';
 
 export const getBookings = async () => {
-    return await api.get('/bookings');
+    const response = await api.get('/bookings/user/1');
+    if (response.data && response.data.content) {
+        return {
+            ...response,
+            data: response.data.content
+        };
+    }
+    return response;
 };
 
 export const createBooking = async (data: any) => {
@@ -13,7 +20,7 @@ export const cancelBooking = async (id: number) => {
 };
 
 export const getAvailability = async (stationId: number, date: string) => {
-    return await api.get(`/bookings/availability/${stationId}`, { params: { date } });
+    return await api.get('/bookings/availability', { params: { stationId, date } });
 };
 
 export const getBookingHistory = async () => {

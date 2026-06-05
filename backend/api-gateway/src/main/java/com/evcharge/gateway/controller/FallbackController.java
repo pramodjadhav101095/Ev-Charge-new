@@ -25,4 +25,22 @@ public class FallbackController {
         return Mono.just(
                 "Station Service is taking too long to respond or is down. Please try again later.");
     }
+
+    @RequestMapping(value = "/booking", method = { RequestMethod.GET, RequestMethod.POST })
+    public Mono<String> bookingServiceFallback() {
+        return Mono.just(
+                "Booking Service is taking too long to respond or is down. Please try again later.");
+    }
+
+    @RequestMapping(value = "/payment", method = { RequestMethod.GET, RequestMethod.POST })
+    public Mono<String> paymentServiceFallback() {
+        return Mono.just(
+                "Payment Service is taking too long to respond or is down. Please try again later.");
+    }
+
+    @RequestMapping(value = "/session", method = { RequestMethod.GET, RequestMethod.POST })
+    public Mono<String> sessionServiceFallback() {
+        return Mono.just(
+                "Session Service is taking too long to respond or is down. Please try again later.");
+    }
 }

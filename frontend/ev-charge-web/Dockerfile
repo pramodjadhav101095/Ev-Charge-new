@@ -7,6 +7,7 @@ ARG VITE_GOOGLE_MAPS_API_KEY
 COPY package*.json ./
 RUN npm install
 COPY . .
+ENV NODE_OPTIONS="--max-old-space-size=1536"
 RUN npm run build
 
 # Stage 2: Serve the application with Nginx

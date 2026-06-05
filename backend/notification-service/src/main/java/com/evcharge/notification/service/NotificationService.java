@@ -32,17 +32,44 @@ public class NotificationService {
         // 1. Resolve Recipient
         String recipient = request.getRecipient();
         if (recipient == null || recipient.isEmpty()) {
-            UserDTO user = userClient.getUserById(request.getUserId());
-            switch (request.getType()) {
-                case EMAIL -> recipient = user.getEmail();
-                case SMS, WHATSAPP -> recipient = user.getPhoneNumber();
-                case PUSH -> recipient = user.getDeviceToken();
+            try {
+                UserDTO user = userClient.getUserById(request.getUserId());
+                if (user != null) {
+                    switch (request.getType()) {
+                        case EMAIL -> recipient = user.getEmail();
+                        case SMS, WHATSAPP -> recipient = user.getPhone();
+                        case PUSH -> recipient = user.getDeviceToken();
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Failed to retrieve user profile for userId: {}", request.getUserId(), e);
+                Notification notification = Notification.builder()
+                        .userId(request.getUserId())
+                        .type(request.getType())
+                        .recipient("UNKNOWN")
+                        .subject(request.getSubject())
+                        .content(request.getContent())
+                        .status(NotificationStatus.FAILED)
+                        .errorMessage("Failed to retrieve user profile: " + e.getMessage())
+                        .build();
+                notification = notificationRepository.save(notification);
+                return mapToResponse(notification);
             }
         }
 
-        if (recipient == null) {
-            log.error("Recipient not found for user: {}", request.getUserId());
-            throw new IllegalArgumentException("Recipient address/token is missing");
+        if (recipient == null || recipient.isEmpty()) {
+            log.error("Recipient address not found for user: {} and type: {}", request.getUserId(), request.getType());
+            Notification notification = Notification.builder()
+                    .userId(request.getUserId())
+                    .type(request.getType())
+                    .recipient("UNKNOWN")
+                    .subject(request.getSubject())
+                    .content(request.getContent())
+                    .status(NotificationStatus.FAILED)
+                    .errorMessage("Recipient address/token is missing (e.g. phone/email is null on user profile)")
+                    .build();
+            notification = notificationRepository.save(notification);
+            return mapToResponse(notification);
         }
 
         // 2. Create Notification Entity

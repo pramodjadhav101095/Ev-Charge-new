@@ -19,7 +19,7 @@ public class UserCredential {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String name;
+    private String username;
     private String email;
     private String password;
     private String roles; // Store roles as comma-separated string or minimal structure for now

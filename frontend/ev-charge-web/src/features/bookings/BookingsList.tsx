@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
-import { fetchBookings, cancelBookingSuccess } from './bookingsSlice';
+import { fetchBookings, cancelBookingSuccess } from '../../store/slices/bookingsSlice';
 import { cancelBooking } from '../../api/bookingApi';
 import EventIcon from '@mui/icons-material/Event';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';

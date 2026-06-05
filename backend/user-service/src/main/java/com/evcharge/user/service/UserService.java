@@ -64,6 +64,14 @@ public class UserService {
         return response;
     }
 
+    public void updateUserRole(Long id, String role) {
+        User user = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found: " + id));
+        user.setRoles(role);
+        User updated = repository.save(user);
+        kafkaTemplate.send(TOPIC_UPDATED, updated);
+    }
+
     public UserDto getUserByUsername(String username) {
         User user = repository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));

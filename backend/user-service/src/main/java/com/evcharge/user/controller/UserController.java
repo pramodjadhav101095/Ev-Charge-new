@@ -23,8 +23,16 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDto> getCurrentUser(@RequestHeader("X-User-Id") String username) {
+    public ResponseEntity<UserDto> getCurrentUser(@RequestHeader("X-User-Name") String username) {
         return ResponseEntity.ok(service.getUserByUsername(username));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<UserDto> updateCurrentUser(
+            @RequestHeader("X-User-Name") String username,
+            @RequestBody UserDto userDto) {
+        UserDto existing = service.getUserByUsername(username);
+        return ResponseEntity.ok(service.updateUser(existing.getId(), userDto));
     }
 
     @PostMapping
@@ -40,6 +48,12 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
         return ResponseEntity.ok(service.updateUser(id, userDto));
+    }
+
+    @PutMapping("/{id}/role")
+    public ResponseEntity<Void> updateUserRole(@PathVariable Long id, @RequestParam String role) {
+        service.updateUserRole(id, role);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

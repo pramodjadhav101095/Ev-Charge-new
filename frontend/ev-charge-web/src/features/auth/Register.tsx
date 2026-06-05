@@ -12,6 +12,11 @@ const Register: React.FC = () => {
     const history = useNavigate();
     const { loading, error } = useSelector((state: RootState) => state.auth);
 
+    React.useEffect(() => {
+        dispatch(setLoading(false));
+        dispatch(setError(null));
+    }, [dispatch]);
+
     const handleRegister = async (values: any) => {
         dispatch(setLoading(true));
         try {

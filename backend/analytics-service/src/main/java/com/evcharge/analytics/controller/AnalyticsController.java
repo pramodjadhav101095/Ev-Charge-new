@@ -31,4 +31,9 @@ public class AnalyticsController {
     public ResponseEntity<DemandPredictionDto> getDemandPrediction(@RequestParam String stationId) {
         return ResponseEntity.ok(analyticsService.getDemandPrediction(stationId));
     }
+
+    @GetMapping("/insights/summary")
+    public ResponseEntity<AnalyticsResponse> getSummary() {
+        return ResponseEntity.ok(analyticsService.getSummary());
+    }
 }

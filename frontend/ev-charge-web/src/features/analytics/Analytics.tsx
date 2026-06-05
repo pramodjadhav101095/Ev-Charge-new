@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import {
     Container, Grid, Typography, Box, Paper,
-    TextField, MenuItem, Button, CircularProgress, Alert, Divider
+    CircularProgress, Alert, Divider
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
-import { fetchAnalyticsData, setDateRange } from './analyticsSlice';
+import { fetchAnalyticsData, setDateRange } from '../../store/slices/analyticsSlice';
 import UsageChart from './UsageChart';
 import RevenueReport from './RevenueReport';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';

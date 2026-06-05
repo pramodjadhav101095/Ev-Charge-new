@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     List, ListItem, ListItemText, ListItemSecondaryAction,
-    IconButton, Typography, Paper, Box, Divider, Chip, Tooltip
+    IconButton, Typography, Paper, Box, Chip, Tooltip
 } from '@mui/material';
 import DoneIcon from '@mui/icons-material/Done';
 import DeleteIcon from '@mui/icons-material/Delete';

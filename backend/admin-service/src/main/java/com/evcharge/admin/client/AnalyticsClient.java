@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @FeignClient(name = "analytics-service")
 public interface AnalyticsClient {
 
-    @GetMapping("/insights/summary")
+    @GetMapping("/analytics/insights/summary")
     AnalyticsResponse getSummary();
 }

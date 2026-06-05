@@ -26,6 +26,11 @@ public class SessionController {
         return ResponseEntity.ok(sessionService.getActiveSessionsByUser(userId));
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<List<SessionDto>> getActiveSessions() {
+        return ResponseEntity.ok(sessionService.getActiveSessions());
+    }
+
     @PostMapping("/{id}/end")
     public ResponseEntity<SessionDto> endSession(@PathVariable Long id) {
         return ResponseEntity.ok(sessionService.endSession(id));

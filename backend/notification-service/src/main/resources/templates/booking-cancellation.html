@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Cancelled</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+        .header {
+            background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
+            padding: 32px 24px;
+            text-align: center;
+            color: #ffffff;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .badge {
+            display: inline-block;
+            background-color: rgba(254, 226, 226, 0.2);
+            color: #fca5a5;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-top: 12px;
+            border: 1px solid rgba(254, 226, 226, 0.3);
+            letter-spacing: 0.5px;
+        }
+        .content {
+            padding: 32px 24px;
+            color: #374151;
+            line-height: 1.6;
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+        .intro {
+            font-size: 15px;
+            color: #4b5563;
+            margin-bottom: 24px;
+        }
+        .summary-card {
+            background-color: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #f3f4f6;
+            margin-bottom: 24px;
+        }
+        .summary-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+        .label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+        .value {
+            color: #111827;
+            font-weight: 600;
+            text-align: right;
+        }
+        .btn-container {
+            text-align: center;
+            margin-top: 32px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #4f46e5;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 15px;
+            text-decoration: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        .footer {
+            background-color: #f9fafb;
+            padding: 24px;
+            text-align: center;
+            font-size: 13px;
+            color: #9ca3af;
+            border-top: 1px solid #f3f4f6;
+        }
+        .footer p {
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Booking Cancelled</h1>
+            <span class="badge">Cancelled</span>
+        </div>
+        <div class="content">
+            <p class="greeting" th:text="'Hi ' + ${username} + ','">Hi User,</p>
+            <p class="intro">This email confirms that your EV charging slot reservation has been cancelled. If this cancellation was made in error or you would like to book a new slot, please visit the application.</p>
+            
+            <div class="summary-card">
+                <h2 class="summary-title">Cancelled Reservation Details</h2>
+                <div class="summary-row">
+                    <span class="label">Booking ID</span>
+                    <span class="value" th:text="'#' + ${bookingId}">#10024</span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Charging Station</span>
+                    <span class="value" th:text="${stationName}">Nexus EV Station</span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Date</span>
+                    <span class="value" th:text="${slotDate}">15 Jun 2026</span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Time Slot</span>
+                    <span class="value" th:text="${slotTime}">10:00 AM - 11:00 AM</span>
+                </div>
+            </div>
+
+            <p style="font-size: 14px; color: #6b7280; margin-top: 24px;">If a payment was already processed for this booking, a refund will be initiated to your original payment source and should reflect in 5-7 business days.</p>
+            
+            <div class="btn-container">
+                <a href="http://localhost:3001/" class="btn" style="color: #ffffff;">Book a New Slot</a>
+            </div>
+        </div>
+        <div class="footer">
+            <p>© 2026 EV Charge Network. All rights reserved.</p>
+            <p>If you did not request this cancellation, please contact our support team immediately.</p>
+        </div>
+    </div>
+</body>
+</html>

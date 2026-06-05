@@ -101,7 +101,10 @@ const stationsSlice = createSlice({
                 if (action.payload.length < 10) {
                     state.pagination.hasMore = false;
                 }
-                state.items = [...state.items, ...action.payload];
+                const newItems = action.payload.filter(
+                    (newItem: any) => !state.items.some((item: any) => item.id === newItem.id)
+                );
+                state.items = [...state.items, ...newItems];
                 state.pagination.page += 1;
             })
             .addCase(fetchStations.rejected, (state, action) => {

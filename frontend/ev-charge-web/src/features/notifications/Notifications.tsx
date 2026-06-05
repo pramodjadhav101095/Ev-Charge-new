@@ -5,7 +5,7 @@ import {
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../../store';
-import { fetchNotifications, markAllLocalRead } from './notificationsSlice';
+import { fetchNotifications, markAllLocalRead } from '../../store/slices/notificationsSlice';
 import { markAllAsRead as apiMarkAllAsRead } from '../../api/notificationApi';
 import InboxList from './InboxList';
 import DoneAllIcon from '@mui/icons-material/DoneAll';

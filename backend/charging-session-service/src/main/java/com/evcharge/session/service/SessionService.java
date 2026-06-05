@@ -46,7 +46,7 @@ public class SessionService {
         ChargingSession saved = repository.save(session);
 
         // 2. Update station status
-        stationClient.updateStationStatus(saved.getStationId(), "CHARGING");
+        stationClient.updateStationStatus(saved.getStationId(), "OCCUPIED");
 
         // 3. Notify via Kafka
         eventProducer.sendSessionStarted(saved);
@@ -76,6 +76,11 @@ public class SessionService {
 
     public List<SessionDto> getActiveSessionsByUser(Long userId) {
         return repository.findByUserIdAndStatus(userId, "ACTIVE")
+                .stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    public List<SessionDto> getActiveSessions() {
+        return repository.findByStatus("ACTIVE")
                 .stream().map(this::mapToDto).collect(Collectors.toList());
     }
 

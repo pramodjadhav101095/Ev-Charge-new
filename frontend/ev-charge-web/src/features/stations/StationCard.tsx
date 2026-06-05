@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { toggleBookmarkState, setSelectedStation } from '../../store/slices/stationsSlice';
 import { toggleBookmark } from '../../api/stationApi';
+import { useNavigate } from 'react-router-dom';
+import { updateBookingDetails } from '../../store/slices/bookingsSlice';
 
 interface StationCardProps {
     station: any;
@@ -15,6 +17,7 @@ interface StationCardProps {
 
 const StationCard: React.FC<StationCardProps> = ({ station }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { bookmarkedIds } = useSelector((state: RootState) => state.stations);
     const isBookmarked = bookmarkedIds.includes(station.id);
 
@@ -81,6 +84,11 @@ const StationCard: React.FC<StationCardProps> = ({ station }) => {
                         variant="contained"
                         size="small"
                         disabled={station.status !== 'AVAILABLE'}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            dispatch(updateBookingDetails({ stationId: station.id, step: 0 }));
+                            navigate('/bookings');
+                        }}
                         sx={{ borderRadius: 1.5 }}
                     >
                         Book Now

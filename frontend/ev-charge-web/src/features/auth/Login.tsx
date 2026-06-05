@@ -9,9 +9,13 @@ import { RootState } from '../../store';
 
 const Login: React.FC = () => {
     const dispatch = useDispatch();
-    const navigate = navigate; // This is a mistake in thought, should be useNavigate()
     const history = useNavigate();
     const { loading, error } = useSelector((state: RootState) => state.auth);
+
+    React.useEffect(() => {
+        dispatch(setLoading(false));
+        dispatch(setError(null));
+    }, [dispatch]);
 
     const handleLogin = async (values: any) => {
         dispatch(setLoading(true));

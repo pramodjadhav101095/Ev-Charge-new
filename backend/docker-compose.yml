@@ -64,7 +64,7 @@ services:
       - kafka
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - MYSQL_HOST=host.docker.internal
+      - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
@@ -81,7 +81,7 @@ services:
       - kafka
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - MYSQL_HOST=host.docker.internal
+      - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
@@ -101,7 +101,7 @@ services:
       - kafka
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - MYSQL_HOST=host.docker.internal
+      - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
@@ -121,7 +121,7 @@ services:
       - kafka
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - MYSQL_HOST=host.docker.internal
+      - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
@@ -139,7 +139,7 @@ services:
       - kafka
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - MYSQL_HOST=host.docker.internal
+      - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
@@ -157,7 +157,7 @@ services:
       - redis
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - MYSQL_HOST=host.docker.internal
+      - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
@@ -175,7 +175,7 @@ services:
       - kafka
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - MYSQL_HOST=host.docker.internal
+      - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
@@ -194,7 +194,7 @@ services:
       - kafka
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - MYSQL_HOST=host.docker.internal
+      - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka
@@ -211,7 +211,7 @@ services:
       - kafka
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - MYSQL_HOST=host.docker.internal
+      - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - EUREKA_HOST=discovery-service
       - KAFKA_HOST=kafka

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Grid, Paper, Tooltip, CircularProgress } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { updateBookingDetails } from '../bookings/bookingsSlice';
+import { updateBookingDetails } from '../../store/slices/bookingsSlice';
 import { getAvailability } from '../../api/bookingApi';
 
 const HOURS = Array.from({ length: 24 }, (_, i) => `${i.toString().padStart(2, '0')}:00`);
@@ -19,14 +19,56 @@ const AvailabilityCalendar: React.FC = () => {
                 setLoading(true);
                 try {
                     const response = await getAvailability(currentBooking.stationId!, currentBooking.date!);
-                    setSlots(response.data);
+                    const data = response.data; // SlotAvailabilityResponse
+                    const combinedSlots: any[] = [];
+                    
+                    const formatTime = (dateTimeStr: string) => {
+                        const parts = dateTimeStr.split('T');
+                        if (parts.length > 1) {
+                            return parts[1].substring(0, 5); // "HH:MM"
+                        }
+                        return dateTimeStr;
+                    };
+                    
+                    let idx = 0;
+                    if (data.availableSlots) {
+                        data.availableSlots.forEach((slot: any) => {
+                            combinedSlots.push({
+                                id: `slot-avail-${idx++}`,
+                                time: formatTime(slot.startTime),
+                                status: 'AVAILABLE',
+                                startTime: slot.startTime,
+                                endTime: slot.endTime
+                            });
+                        });
+                    }
+                    if (data.bookedSlots) {
+                        data.bookedSlots.forEach((slot: any) => {
+                            combinedSlots.push({
+                                id: `slot-booked-${idx++}`,
+                                time: formatTime(slot.startTime),
+                                status: 'BOOKED',
+                                startTime: slot.startTime,
+                                endTime: slot.endTime
+                            });
+                        });
+                    }
+                    
+                    combinedSlots.sort((a, b) => a.startTime.localeCompare(b.startTime));
+                    setSlots(combinedSlots);
                 } catch (err) {
                     // Mocking slots if API fails for demo
-                    setSlots(HOURS.map((h, i) => ({
-                        id: `slot-${i}`,
-                        time: h,
-                        status: Math.random() > 0.3 ? 'AVAILABLE' : 'BOOKED'
-                    })));
+                    const todayStr = currentBooking.date; // e.g. "2026-05-29"
+                    setSlots(HOURS.map((h, i) => {
+                        const nextHour = `${(Number(h.split(':')[0]) + 1).toString().padStart(2, '0')}:00`;
+                        return {
+                            id: `slot-${i}`,
+                            time: h,
+                            status: Math.random() > 0.3 ? 'AVAILABLE' : 'BOOKED',
+                            startTime: `${todayStr}T${h}:00`,
+                            endTime: `${todayStr}T${nextHour}:00`
+                        };
+                    }));
                 } finally {
                     setLoading(false);
                 }
@@ -37,7 +79,11 @@ const AvailabilityCalendar: React.FC = () => {
 
     const handleSlotSelect = (slot: any) => {
         if (slot.status === 'AVAILABLE') {
-            dispatch(updateBookingDetails({ slotId: slot.id }));
+            dispatch(updateBookingDetails({
+                slotId: slot.id,
+                slotStartTime: slot.startTime,
+                slotEndTime: slot.endTime
+            }));
         }
     };
 
